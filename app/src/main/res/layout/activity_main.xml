@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/bg">
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="18dp">
+
+        <TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="مدير باقة Wi‑Fi" android:textSize="28sp" android:textStyle="bold"
+            android:textColor="@color/text" android:gravity="center" android:paddingBottom="8dp"/>
+        <TextView android:id="@+id/subtitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="تحديد الجيجا + مراقبة الاستهلاك + حظر عند انتهاء الباقة"
+            android:textSize="14sp" android:textColor="@color/muted" android:gravity="center" android:paddingBottom="16dp"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/card" android:orientation="vertical" android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="إعداد الباقة" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text"/>
+            <EditText android:id="@+id/quotaGb" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="إجمالي الباقة بالجيجابايت" android:inputType="numberDecimal" android:text="5"/>
+            <EditText android:id="@+id/durationDays" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="مدة الباقة بالأيام" android:inputType="number" android:text="30"/>
+            <EditText android:id="@+id/adminPin" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="PIN المسؤول" android:inputType="numberPassword" android:text="1234"/>
+            <Button android:id="@+id/saveBtn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="حفظ / بدء باقة جديدة"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/card" android:orientation="vertical" android:padding="16dp" android:layout_marginTop="12dp">
+            <TextView android:id="@+id/usageText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="الاستخدام: —" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text"/>
+            <TextView android:id="@+id/percentText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="النسبة: —" android:textSize="16sp" android:textColor="@color/muted" android:paddingTop="6dp"/>
+            <ProgressBar android:id="@+id/progress" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="18dp" android:max="100" android:progress="0" android:layout_marginTop="8dp"/>
+            <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="الحالة: —" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/text" android:paddingTop="10dp"/>
+            <TextView android:id="@+id/infoText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="المراقبة تعتمد على إحصاءات Wi‑Fi في أندرويد." android:textSize="13sp" android:textColor="@color/muted" android:paddingTop="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/card" android:orientation="vertical" android:padding="16dp" android:layout_marginTop="12dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="الصلاحيات والحماية" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text"/>
+            <TextView android:id="@+id/ownerText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Device Owner: غير مفعل" android:textSize="15sp" android:textColor="@color/text" android:paddingTop="8dp"/>
+            <Button android:id="@+id/usageAccessBtn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="فتح صلاحية إحصاءات الاستخدام"/>
+            <Button android:id="@+id/vpnBtn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="تفعيل حظر الإنترنت (VPN)"/>
+            <Button android:id="@+id/startBtn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="تشغيل المراقبة"/>
+            <Button android:id="@+id/stopBtn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="إيقاف المراقبة"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="لجعل التطبيق Device Owner على جهاز مُهيأ للإدارة، استخدم provisioning الرسمي أو ADB أثناء إعداد جهاز اختبار. لا يتم أخذ Device Owner تلقائياً من داخل التطبيق." android:textSize="12sp" android:textColor="@color/muted" android:paddingTop="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/card" android:orientation="vertical" android:padding="16dp" android:layout_marginTop="12dp" android:layout_marginBottom="20dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="مهم بخصوص الراوتر" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="هذا الإصدار يراقب ويحظر الجهاز الذي ثبّت عليه التطبيق. لكي توقف الخمسة أجهزة معاً عند نفاد باقة الراوتر، يلزم أن يكون التطبيق مرتبطاً بالراوتر عبر API / SNMP / مدير الشبكة أو أن يعمل كـ Gateway." android:textSize="13sp" android:textColor="@color/muted" android:paddingTop="7dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
