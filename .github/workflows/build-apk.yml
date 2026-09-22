@@ -14,39 +14,130 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1) تحميل المشروع
       - name: Checkout code
         uses: actions/checkout@v7
 
+      # 2) Java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
+      # 3) Gradle 9.6.1
       - name: Set up Gradle 9.6.1
         uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '9.6.1'
           cache-provider: basic
 
-      - name: Set up Android SDK
+      # 4) تجهيز Android SDK بدون محاولة قبول التراخيص
+      - name: Set up Android SDK tools
         uses: android-actions/setup-android@v4
         with:
-          packages: |
-            platform-tools
-            platforms;android-36
-            build-tools;36.0.0
-          accept-android-sdk-licenses: true
+          accept-android-sdk-licenses: false
+          packages: ''
 
+      # 5) قبول تراخيص Android SDK تلقائياً
+      - name: Accept Android SDK licenses
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+
+      # 6) تثبيت حزم SDK المطلوبة فقط
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0"
+
+      # 7) التأكد من شكل المشروع والمسارات
+      - name: Check project structure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "===== Repository ====="
+          pwd
+
+          echo "===== Root files ====="
+          ls -la
+
+          if [ ! -f "settings.gradle" ]; then
+            echo "ERROR: settings.gradle not found in repository root."
+            echo "Current files:"
+            find . -maxdepth 3 -type f | sort
+            exit 1
+          fi
+
+          if [ ! -d "app" ]; then
+            echo "ERROR: app directory not found in repository root."
+            echo "Current directories:"
+            find . -maxdepth 3 -type d | sort
+            exit 1
+          fi
+
+          if [ ! -f "app/build.gradle" ]; then
+            echo "ERROR: app/build.gradle not found."
+            exit 1
+          fi
+
+          echo "Project structure is OK."
+
+      # 8) اختبار Gradle
+      - name: Show Gradle version
+        shell: bash
+        run: |
+          gradle --version
+
+      # 9) بناء APK
       - name: Build Debug APK
         shell: bash
         run: |
           set -euo pipefail
-          gradle --no-daemon --stacktrace :app:assembleDebug
 
+          gradle \
+            --no-daemon \
+            --stacktrace \
+            --console=plain \
+            :app:assembleDebug
+
+      # 10) التأكد أن APK اتبنى
+      - name: Verify APK
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Searching for APK..."
+
+          APK_PATH=$(find . \
+            -type f \
+            -path "*/app/build/outputs/apk/debug/*.apk" \
+            | head -n 1)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "ERROR: APK file was not generated."
+            echo "Build outputs:"
+            find . -type f | grep -E 'apk$|build/outputs' || true
+            exit 1
+          fi
+
+          echo "APK FOUND:"
+          echo "$APK_PATH"
+
+          ls -lh "$APK_PATH"
+
+      # 11) رفع APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: WiFiQuotaManager-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: '**/app/build/outputs/apk/debug/*.apk'
           if-no-files-found: error
